@@ -35,18 +35,6 @@ resource "aws_route_table_association" "public_subnet_asso" {
   route_table_id = aws_route_table.public_rt.id
 }
 
-# resource "aws_route_table_association" "app_private_subnet_asso" {
-#   count          = length(var.app_private_subnet_cidrs)
-#   subnet_id      = element(aws_subnet.app_private_subnets[*].id, count.index)
-#   route_table_id = aws_route_table.app_private_rt.id
-# }
-
-# resource "aws_route_table_association" "db_private_subnet_asso" {
-#   count          = length(var.db_private_subnet_cidrs)
-#   subnet_id      = element(aws_subnet.db_private_subnets[*].id, count.index)
-#   route_table_id = aws_route_table.db_private_rt.id
-# }
-
 resource "aws_subnet" "public_subnets" {
   count             = length(var.public_subnet_cidrs)
   vpc_id            = aws_vpc.main.id
@@ -80,3 +68,82 @@ resource "aws_subnet" "db_private_subnets" {
   }
 }
 
+resource "aws_security_group" "wordpress_sg" {
+  name        = "allow_http"
+  description = "Allow http inbound traffic"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "database_sg" {
+  name        = "allow_mysql"
+  description = "Allow mysql inbound traffic"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    from_port       = 3306
+    to_port         = 3306
+    protocol        = "tcp"
+    security_groups = [aws_security_group.wordpress_sg.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "load_balancer_sg" {
+  name        = "allow_lb_http"
+  description = "Allow http inbound traffic to load balancer"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "efs_sg" {
+  name        = "allow_efs"
+  description = "Allow efs inbound traffic"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    from_port       = 2049
+    to_port         = 2049
+    protocol        = "tcp"
+    security_groups = [aws_security_group.wordpress_sg.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
