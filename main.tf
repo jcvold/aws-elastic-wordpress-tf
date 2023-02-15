@@ -147,3 +147,39 @@ resource "aws_security_group" "efs_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+resource "aws_iam_role" "wordpress" {
+  name = "wordpress-role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_instance_profile" "wordpress_profile" {
+  name = "wordpress_instance_profile"
+  role = aws_iam_role.wordpress.id
+}
+
+resource "aws_iam_role_policy_attachment" "attachment" {
+  for_each = toset([
+    "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy",
+    "arn:aws:iam::aws:policy/AmazonSSMFullAccess",
+    "arn:aws:iam::aws:policy/AmazonElasticFileSystemClientFullAccess"
+  ])
+
+  role       = aws_iam_role.wordpress.name
+  policy_arn = each.value
+}
