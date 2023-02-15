@@ -1,2 +1,3 @@
 # aws-elastic-wordpress-tf
  
+Working on taking the [A4LVPC](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/quickcreate?templateURL=https://learn-cantrill-labs.s3.amazonaws.com/aws-elastic-wordpress-evolution/A4LVPC.yaml&stackName=A4LVPC) cloudformation stack and coverting to Terraform, then doing the same with the rest of the lessons at: https://github.com/acantril/learn-cantrill-io-labs/tree/master/aws-elastic-wordpress-evolution
