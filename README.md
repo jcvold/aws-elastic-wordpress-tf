@@ -8,6 +8,8 @@ Implementing the lessons via Terraform instead of manually in the AWS console.
 
 The `A4LVPC.yaml` file is included for reference only and is not actually used in this project.
 
+There are a few changes from the source instructions for my own setup. These can mostly be found in the `variables.tf` file. I use us-east-2 instead of us-east-1, and my subnet CIDRs are slightly different.
+
 ## Installation
 
 Navigate to the desired **Stage** folder and run:
