@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/bash -xe
 
 DBPassword=$(aws ssm get-parameters --region us-east-2 --names /A4L/Wordpress/DBPassword --with-decryption --query Parameters[0].Value)
 DBPassword=`echo $DBPassword | sed -e 's/^"//' -e 's/"$//'`
