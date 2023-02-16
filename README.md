@@ -28,10 +28,10 @@ terraform fmt
 terraform plan
 
 # commit changes to infrastructure
-terrafrom apply
+terraform apply
 
 # remove changes to infrastructure
-terrafrom destroy
+terraform destroy
 ```
 
 ## License
