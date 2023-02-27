@@ -1,4 +1,7 @@
-#! /bin/bash -xe
+#!/bin/bash -xe
+
+EFSFSID=$(aws ssm get-parameters --region us-east-2 --names /A4L/Wordpress/EFSFSID --query Parameters[0].Value)
+EFSFSID=`echo $EFSFSID | sed -e 's/^"//' -e 's/"$//'`
 
 DBPassword=$(aws ssm get-parameters --region us-east-2 --names /A4L/Wordpress/DBPassword --with-decryption --query Parameters[0].Value)
 DBPassword=`echo $DBPassword | sed -e 's/^"//' -e 's/"$//'`
@@ -18,13 +21,18 @@ DBEndpoint=`echo $DBEndpoint | sed -e 's/^"//' -e 's/"$//'`
 sudo yum -y update
 sudo yum -y upgrade
 
-sudo yum install -y mariadb-server httpd wget
+sudo yum install -y mariadb-server httpd wget amazon-efs-utils
 sudo amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2
 sudo amazon-linux-extras install epel -y
 sudo yum install stress -y
 
 sudo systemctl enable httpd
 sudo systemctl start httpd
+
+mkdir -p /var/www/html/wp-content
+chown -R ec2-user:apache /var/www/
+echo -e "$EFSFSID:/ /var/www/html/wp-content efs _netdev,tls,iam 0 0" >> /etc/fstab
+mount -a -t efs defaults
 
 sudo wget http://wordpress.org/latest.tar.gz -P /var/www/html
 cd /var/www/html
