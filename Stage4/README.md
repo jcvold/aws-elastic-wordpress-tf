@@ -6,4 +6,4 @@ This folder includes the updated Terraform files for **Stage4** of the project.
 
 Step 4E is handled by editing the `init.sh` file instead of the launch template.
 
-**Note: Each time you destroy, than re-apply the efs module, you must edit the `/A4L/Wordpress/EFSFSID` efs id parameter in SSM.**
+**Note: Each time you destroy, then re-apply the efs module, you must edit the `/A4L/Wordpress/EFSFSID` efs id parameter in SSM.**
