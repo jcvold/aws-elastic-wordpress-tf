@@ -1,4 +1,4 @@
-#! /bin/bash -xe
+#!/bin/bash
 
 DBPassword=$(aws ssm get-parameters --region us-east-2 --names /A4L/Wordpress/DBPassword --with-decryption --query Parameters[0].Value)
 DBPassword=`echo $DBPassword | sed -e 's/^"//' -e 's/"$//'`
@@ -37,6 +37,7 @@ sudo cp ./wp-config-sample.php ./wp-config.php
 sudo sed -i "s/'database_name_here'/'$DBName'/g" wp-config.php
 sudo sed -i "s/'username_here'/'$DBUser'/g" wp-config.php
 sudo sed -i "s/'password_here'/'$DBPassword'/g" wp-config.php
+sudo sed -i "s/'localhost'/'$DBEndpoint'/g" wp-config.php
 
 sudo usermod -a -G apache ec2-user   
 sudo chown -R ec2-user:apache /var/www
