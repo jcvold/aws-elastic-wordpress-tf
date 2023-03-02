@@ -32,4 +32,12 @@ resource "aws_launch_template" "wordpress" {
   tags = {
     Name = "Wordpress-LG"
   }
+
+  depends_on = [
+    aws_ssm_parameter.db_endpoint,
+    aws_ssm_parameter.db_name,
+    aws_ssm_parameter.db_user,
+    aws_ssm_parameter.efs_fsid,
+    aws_ssm_parameter.alb_dns_name
+  ]
 }

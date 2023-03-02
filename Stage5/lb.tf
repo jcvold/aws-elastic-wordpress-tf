@@ -33,5 +33,6 @@ resource "aws_lb_target_group" "wordpress" {
 }
 
 output "lb-dns" {
-  value = aws_lb.wordpress.dns_name
+  value       = aws_lb.wordpress.dns_name
+  description = "Public load balancer DNS name"
 }
