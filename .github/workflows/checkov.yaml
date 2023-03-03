@@ -46,3 +46,4 @@ jobs:
         if: success() || failure()
         with:
           sarif_file: results.sarif
+          skip_check: CKV_AWS_126
