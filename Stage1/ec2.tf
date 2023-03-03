@@ -26,6 +26,10 @@ resource "aws_instance" "web" {
   iam_instance_profile        = aws_iam_instance_profile.wordpress_profile.id
   user_data                   = file("init.sh")
   subnet_id                   = aws_subnet.public_subnets.*.id[count.index]
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "required"
+  }
   tags = {
     Name = "Wordpress-Manual"
   }
