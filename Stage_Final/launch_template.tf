@@ -9,7 +9,7 @@ resource "aws_launch_template" "wordpress" {
     name = aws_iam_instance_profile.wordpress_profile.name
   }
 
-  image_id = "ami-0cc87e5027adcdca8"
+  image_id = data.aws_ssm_parameter.aws-amzn2-linux-ami.value
 
   instance_initiated_shutdown_behavior = "terminate"
 
@@ -40,4 +40,9 @@ resource "aws_launch_template" "wordpress" {
     aws_ssm_parameter.efs_fsid,
     aws_ssm_parameter.alb_dns_name
   ]
+}
+
+data "aws_ssm_parameter" "aws-amzn2-linux-ami" {
+  # Returns the latest Amazon Linux 2 ami  
+  name = "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
 }
